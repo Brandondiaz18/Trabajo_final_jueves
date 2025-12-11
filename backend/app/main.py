@@ -1,10 +1,21 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .config import settings
 from .db import connect_to_mongo, close_mongo_connection
 from .routers import todos
 
-app = FastAPI(title="TodoList FastAPI")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    connect_to_mongo()
+    print("Connected to MongoDB")
+    yield
+    # Shutdown
+    close_mongo_connection()
+    print("Closed MongoDB connection")
+
+app = FastAPI(title="TodoList FastAPI", lifespan=lifespan)
 
 # CORS
 app.add_middleware(
@@ -14,15 +25,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.on_event("startup")
-async def startup_event():
-    connect_to_mongo()
-    print("Connected to MongoDB")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    close_mongo_connection()
-    print("Closed MongoDB connection")
 
 app.include_router(todos.router)
