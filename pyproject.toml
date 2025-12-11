@@ -1,2 +1,15 @@
-[project]
-requires-python = ">=3.11,<3.13"
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["Brandon"]
+
+[tool.poetry.dependencies]
+python = "3.11.*"
+fastapi = "0.110.0"
+uvicorn = "0.29.0"
+pydantic = "2.7.1"
+pydantic-settings = "2.2.1"
+pymongo = "4.6.1"
+dnspython = "2.6.1"
+python-dotenv = "1.0.1"
